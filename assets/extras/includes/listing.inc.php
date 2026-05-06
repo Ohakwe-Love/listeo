@@ -30,10 +30,9 @@ function all_categories(): array
 {
     try {
         $statement = db()->query('SELECT id, name, slug, description, image_path FROM categories ORDER BY sort_order, name');
-        $categories = $statement->fetchAll();
-        return $categories ?: fallback_categories();
+        return $statement->fetchAll();
     } catch (Throwable $exception) {
-        return fallback_categories();
+        return [];
     }
 }
 
@@ -54,17 +53,9 @@ function all_listings(?string $categorySlug = null): array
         $sql .= ' ORDER BY listings.featured DESC, listings.created_at DESC, listings.title';
         $statement = db()->prepare($sql);
         $statement->execute($params);
-        $listings = $statement->fetchAll();
-
-        return $listings ?: fallback_listings();
+        return $statement->fetchAll();
     } catch (Throwable $exception) {
-        $listings = fallback_listings();
-
-        if (!$categorySlug) {
-            return $listings;
-        }
-
-        return array_values(array_filter($listings, fn (array $listing): bool => $listing['category_slug'] === $categorySlug));
+        return [];
     }
 }
 
@@ -81,9 +72,9 @@ function find_listing(int $id): ?array
         $statement->execute(['id' => $id]);
         $listing = $statement->fetch();
 
-        return $listing ?: find_fallback_listing($id);
+        return $listing ?: null;
     } catch (Throwable $exception) {
-        return find_fallback_listing($id);
+        return null;
     }
 }
 

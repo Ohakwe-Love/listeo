@@ -50,6 +50,10 @@
                     <input type="text" name="name" placeholder="Name" value="<?php echo h($oldName); ?>" required/>
                     <input type="email" name="email" placeholder="Email" value="<?php echo h($oldEmail); ?>" required />
                     <input type="password" name="password" placeholder="Password" minlength="8" required />
+                    <select name="account_type" class="form-select">
+                        <option value="user">I want to browse and book</option>
+                        <option value="lister">I want to list properties</option>
+                    </select>
                     <button type="submit">Sign Up</button>
                 </form>
             </div>

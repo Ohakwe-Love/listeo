@@ -3,6 +3,7 @@
     start_secure_session();
     $messages = get_flash_messages();
     $oldEmail = old_input('email');
+    $redirect = safe_redirect_path($_GET['redirect'] ?? ($_SESSION['intended_url'] ?? ''), '');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +47,9 @@
                             <p class="form-alert form-alert-<?php echo h($type); ?>"><?php echo h($message); ?></p>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
+                    <?php if ($redirect !== ''): ?>
+                        <input type="hidden" name="redirect" value="<?php echo h($redirect); ?>">
+                    <?php endif; ?>
                     <input type="email" name="email" placeholder="Email" value="<?php echo h($oldEmail); ?>" required/>
                     <input type="password" name="password" placeholder="Password" required/>
                     <a href="#" class="forgot_password">Forgot your password?</a>

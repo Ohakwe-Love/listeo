@@ -24,6 +24,21 @@ function redirect_to(string $path): never
     exit;
 }
 
+function safe_redirect_path(?string $path, string $fallback = 'index.php'): string
+{
+    $path = trim((string) $path);
+
+    if ($path === '' || str_starts_with($path, '//') || preg_match('/^[a-z][a-z0-9+.-]*:/i', $path)) {
+        return $fallback;
+    }
+
+    if (str_contains($path, "\r") || str_contains($path, "\n")) {
+        return $fallback;
+    }
+
+    return ltrim($path, '/');
+}
+
 function h(?string $value): string
 {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -69,6 +84,32 @@ function current_user(): ?array
     return $_SESSION['user'] ?? null;
 }
 
+function original_admin(): ?array
+{
+    start_secure_session();
+    return $_SESSION['impersonator_admin'] ?? null;
+}
+
+function is_impersonating(): bool
+{
+    return original_admin() !== null;
+}
+
+function user_role(): string
+{
+    return current_user()['role'] ?? 'user';
+}
+
+function is_admin(): bool
+{
+    return user_role() === 'admin';
+}
+
+function is_lister(): bool
+{
+    return in_array(user_role(), ['lister', 'admin'], true);
+}
+
 function require_guest(): void
 {
     if (current_user() !== null) {
@@ -79,7 +120,34 @@ function require_guest(): void
 function require_auth(): void
 {
     if (current_user() === null) {
+        $currentPath = basename((string) ($_SERVER['SCRIPT_NAME'] ?? 'index.php'));
+        $queryString = (string) ($_SERVER['QUERY_STRING'] ?? '');
+
+        if ($currentPath !== 'login.php') {
+            $_SESSION['intended_url'] = $currentPath . ($queryString !== '' ? '?' . $queryString : '');
+        }
+
         flash('error', 'Please sign in to continue.');
-        redirect_to('login.php');
+        redirect_to('login.php' . (isset($_SESSION['intended_url']) ? '?redirect=' . urlencode((string) $_SESSION['intended_url']) : ''));
+    }
+}
+
+function require_admin(): void
+{
+    require_auth();
+
+    if (!is_admin()) {
+        flash('error', 'Admin access only.');
+        redirect_to('user-dashboard.php');
+    }
+}
+
+function require_lister(): void
+{
+    require_auth();
+
+    if (!is_lister()) {
+        flash('error', 'Please use a lister account to manage listings.');
+        redirect_to('user-dashboard.php');
     }
 }

@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(120) NOT NULL,
     email VARCHAR(190) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    role ENUM('user', 'lister', 'admin') NOT NULL DEFAULT 'user',
+    account_status ENUM('active', 'suspended') NOT NULL DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -26,6 +28,7 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TABLE IF NOT EXISTS listings (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    owner_id INT UNSIGNED NULL,
     category_id INT UNSIGNED NOT NULL,
     title VARCHAR(160) NOT NULL,
     slug VARCHAR(180) NOT NULL UNIQUE,
@@ -36,12 +39,93 @@ CREATE TABLE IF NOT EXISTS listings (
     image_path VARCHAR(255) NOT NULL,
     short_description VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    status ENUM('draft', 'published') NOT NULL DEFAULT 'published',
+    status ENUM('draft', 'pending_payment', 'pending_review', 'published', 'rejected') NOT NULL DEFAULT 'published',
+    payment_status ENUM('unpaid', 'pending', 'paid') NOT NULL DEFAULT 'paid',
+    rejection_reason TEXT NULL,
     featured TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT listings_owner_id_foreign FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
     CONSTRAINT listings_category_id_foreign FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS listing_payments (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    listing_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    plan_name VARCHAR(80) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_reference VARCHAR(190) NULL,
+    status ENUM('pending', 'verified', 'rejected') NOT NULL DEFAULT 'pending',
+    admin_note TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT listing_payments_listing_id_foreign FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE,
+    CONSTRAINT listing_payments_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS admin_audit_logs (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT UNSIGNED NOT NULL,
+    action VARCHAR(120) NOT NULL,
+    target_type VARCHAR(80) NULL,
+    target_id INT UNSIGNED NULL,
+    details TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT admin_audit_logs_admin_id_foreign FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS admin_impersonation_logs (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    reason TEXT NOT NULL,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP NULL,
+    CONSTRAINT admin_impersonation_logs_admin_id_foreign FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT admin_impersonation_logs_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bookmarks (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    listing_id INT UNSIGNED NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY bookmarks_user_listing_unique (user_id, listing_id),
+    CONSTRAINT bookmarks_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT bookmarks_listing_id_foreign FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    listing_id INT UNSIGNED NOT NULL,
+    booking_date DATE NOT NULL,
+    guests INT UNSIGNED NOT NULL DEFAULT 1,
+    note TEXT NULL,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT bookings_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT bookings_listing_id_foreign FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    listing_id INT UNSIGNED NOT NULL,
+    rating TINYINT UNSIGNED NOT NULL,
+    comment TEXT NOT NULL,
+    status ENUM('pending', 'published') NOT NULL DEFAULT 'published',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY reviews_user_listing_unique (user_id, listing_id),
+    CONSTRAINT reviews_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT reviews_listing_id_foreign FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE
+);
+
+INSERT IGNORE INTO users (name, email, password_hash, role) VALUES
+('Listeo Admin', 'admin@listeo.local', '$2y$12$TfiARpJU7eiZaNNTa5CtO.HUC.1NOeHvrPljjXHgZzTVvojBP96hC', 'admin');
 
 INSERT IGNORE INTO categories (name, slug, description, image_path, sort_order) VALUES
 ('Eat & Drink', 'eat-drink', 'Restaurants, cafes, kitchens, lounges, and food vendors with rich listing details.', 'assets/images/categories/categories1.jpg', 1),

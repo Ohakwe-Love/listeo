@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = (string) ($_POST['password'] ?? '');
+$role = ($_POST['account_type'] ?? 'user') === 'lister' ? 'lister' : 'user';
 
 remember_old_input(['name' => $name, 'email' => $email]);
 
@@ -44,13 +45,14 @@ try {
     }
 
     $createUser = $pdo->prepare(
-        'INSERT INTO users (name, email, password_hash) VALUES (:name, :email, :password_hash)'
+        'INSERT INTO users (name, email, password_hash, role) VALUES (:name, :email, :password_hash, :role)'
     );
 
     $createUser->execute([
         'name' => $name,
         'email' => $email,
         'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+        'role' => $role,
     ]);
 
     unset($_SESSION['old']);

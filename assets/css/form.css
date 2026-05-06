@@ -86,7 +86,8 @@
     margin-bottom: 20px;
 }
 
-.form_wrapper input {
+.form_wrapper input,
+.form_wrapper .form-select {
 	background-color: var( --secondary-bg-color);
 	border: 1px solid transparent;
 	padding: 12px 15px;
@@ -98,7 +99,8 @@
     color: var(--category-lighter-bg-color);
 }
 
-.form_wrapper input:focus {
+.form_wrapper input:focus,
+.form_wrapper .form-select:focus {
 	border: 1px solid var(--primary-color);
 }
 

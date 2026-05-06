@@ -11,16 +11,16 @@
 
                     <div class="footer-links">
                         <ul>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="reviews.php">Reviews</a></li>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="bookmarks.php">bookmarks</a></li>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="bookings.php">bookings</a></li>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="contacts.php">contacts</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="user-reviews.php">Reviews</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="user-bookmarks.php">bookmarks</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="user-bookings.php">bookings</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="contact.php">contacts</a></li>
                         </ul>
                         <ul>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="">my profile</a></li>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="">my listing</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="user-profile.php">my profile</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="user-listings.php">my listings</a></li>
                             <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="blog.php">blogs</a></li>
-                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="">Add listing</a></li>
+                            <li><span><i class="fa-solid fa-angle-right"></i></span> <a href="contact.php">Add listing</a></li>
                         </ul>
                     </div>
                 </div>

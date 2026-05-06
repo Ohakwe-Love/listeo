@@ -17,6 +17,9 @@
 
     <!-- css -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <?php foreach (($extraStyles ?? []) as $stylesheet): ?>
+        <link rel="stylesheet" href="<?php echo h($stylesheet); ?>">
+    <?php endforeach; ?>
 
     <!-- javascript -->
     <script src="assets/js/script.js" defer></script>
@@ -37,27 +40,23 @@
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="about.php">About</a></li>
-                    <li><a href="services.php">Services</a></li>
-                    <li><a href="blog.php">Blog</a></li>
-                    <li><a href="contact.php">Contact</a></li>
+                    <li><a href="listings.php">Listings</a></li>
+                    <li class="nav-dropdown">
+                        <button class="nav-dropdown-toggle" type="button">
+                            Explore <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="services.php">Services</a>
+                            <a href="about.php">About</a>
+                            <a href="blog.php">Blog</a>
+                            <a href="contact.php">Contact</a>
+                        </div>
+                    </li>
+                    <li><a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">Add Listing</a></li>
                 </ul>
             </nav>
 
             <div class="header-side-options">
-                <div class="header-cart">
-                    <span class="cart-icon">
-                        <span class="cart-count">0</span>
-                        <svg class="shopping-cart-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                    </span>
-                    <div class="cart-wrapper">
-                        <p>No products found in the cart</p>
-                    </div>
-                </div>
                 <span class="small-screen-sign-in">
                     <svg class="sign-in-icon" xmlns="http://www.w3.org/2000/svg" width="22px" height="22px" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
@@ -68,6 +67,7 @@
                 <span class="small-screen-menu"><i class="fa-solid fa-bars"></i></span>
                 <?php if ($authUser): ?>
                     <span class="header-user">Hi, <?php echo h($authUser['name']); ?></span>
+                    <a href="user-dashboard.php" class="header-sign-in">dashboard</a>
                     <a href="logout.php" class="header-sign-in">logout</a>
                 <?php else: ?>
                     <a href="login.php" class="header-sign-in">
@@ -81,6 +81,16 @@
             </div>
         </header>
 
+        <?php if (is_impersonating()): ?>
+            <?php $adminContext = original_admin(); ?>
+            <div class="impersonation-banner">
+                <strong>Admin impersonation active:</strong>
+                You are viewing this account as <?php echo h($authUser['name'] ?? 'user'); ?>.
+                Original admin: <?php echo h($adminContext['email'] ?? 'admin'); ?>.
+                <a href="stop-impersonation.php">End impersonation</a>
+            </div>
+        <?php endif; ?>
+
         <!-- small-screen-nav -->
         <div class="small-screen-nav">
             <div class="small-screen-header">
@@ -90,12 +100,14 @@
 
             <ul>
                 <li><a href="index.php">home <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="about.php">about <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="pages.php">pages <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="contact.php">contact <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="services.php">services <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="listings.php">listings <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="about.php">about <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="services.php">services <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">add listing <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="blog.php">blog <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="contact.php">contact <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <?php if ($authUser): ?>
+                    <li><a href="user-dashboard.php">dashboard <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                     <li><a href="logout.php">logout <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <?php else: ?>
                     <li><a href="login.php">sign in <span><i class="fa-solid fa-angle-right"></i></span></a></li>

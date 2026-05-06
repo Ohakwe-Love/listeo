@@ -1,8 +1,9 @@
 <?php
-    require_once __DIR__ . "/assets/extras/includes/listing.inc.php";
+    require_once __DIR__ . "/assets/extras/includes/account.inc.php";
     $categorySlug = trim($_GET['category'] ?? '') ?: null;
     $categories = all_categories();
     $listings = all_listings($categorySlug);
+    $authUser = current_user();
 ?>
 <?php include_once "assets/extras/header.php"; ?>
 
@@ -10,7 +11,7 @@
     <div class="page-inner">
         <span class="page-kicker">Listings</span>
         <h1>Browse featured places and services with confidence.</h1>
-        <p>These cards are now loaded through the listing data layer, with a database table ready behind them once `database.sql` is imported.</p>
+        <p>Browse published listings, save your shortlist, and return when you are ready to book or contact a provider.</p>
         <div class="page-actions">
             <a class="page-btn page-btn-primary" href="signup.php">create account</a>
             <a class="page-btn page-btn-light" href="bookmarks.php">view bookmarks</a>
@@ -38,7 +39,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <span>Search by service, area, or provider</span>
             </div>
-            <a href="contact.php">Add a listing</a>
+            <a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">Add a listing</a>
         </div>
 
         <div class="filter-pills">
@@ -53,7 +54,7 @@
         <?php if (!$listings): ?>
             <div class="empty-state">
                 <h2>No listings found</h2>
-                <p>Try another category or add listings to the database.</p>
+                <p>Try another category or submit the first listing for review.</p>
             </div>
         <?php else: ?>
             <div class="listing-grid">
@@ -72,6 +73,23 @@
                                 <span><i class="fa-solid fa-star"></i> <?php echo h((string) $listing['rating']); ?></span>
                             </div>
                             <a class="listing-card-action" href="listing.php?id=<?php echo (int) $listing['id']; ?>">View details</a>
+                            <?php if ($authUser): ?>
+                                <?php $saved = is_bookmarked((int) $authUser['id'], (int) $listing['id']); ?>
+                                <form class="listing-card-form" action="bookmark-action.php" method="post">
+                                    <input type="hidden" name="listing_id" value="<?php echo (int) $listing['id']; ?>">
+                                    <input type="hidden" name="redirect" value="listings.php<?php echo $categorySlug ? '?category=' . h($categorySlug) : ''; ?>">
+                                    <input type="hidden" name="action" value="toggle">
+                                    <button class="listing-card-save <?php echo $saved ? 'is-saved' : ''; ?>" type="submit">
+                                        <i class="fa-solid fa-heart"></i>
+                                        <?php echo $saved ? 'Saved' : 'Save'; ?>
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                <a class="listing-card-save" href="login.php?redirect=<?php echo urlencode('listings.php' . ($categorySlug ? '?category=' . $categorySlug : '')); ?>">
+                                    <i class="fa-solid fa-heart"></i>
+                                    Save
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>

@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $email = trim($_POST['email'] ?? '');
 $password = (string) ($_POST['password'] ?? '');
+$redirect = safe_redirect_path($_POST['redirect'] ?? ($_SESSION['intended_url'] ?? ''), '');
 
 remember_old_input(['email' => $email]);
 
@@ -23,7 +24,7 @@ if ($email === '' || $password === '') {
 
 try {
     $pdo = db();
-    $statement = $pdo->prepare('SELECT id, name, email, password_hash FROM users WHERE email = :email LIMIT 1');
+    $statement = $pdo->prepare('SELECT id, name, email, password_hash, role, account_status FROM users WHERE email = :email LIMIT 1');
     $statement->execute(['email' => $email]);
     $user = $statement->fetch();
 
@@ -32,15 +33,26 @@ try {
         redirect_to('../../../login.php');
     }
 
+    if (($user['account_status'] ?? 'active') !== 'active') {
+        flash('error', 'This account is not active.');
+        redirect_to('../../../login.php');
+    }
+
     session_regenerate_id(true);
     $_SESSION['user'] = [
         'id' => (int) $user['id'],
         'name' => $user['name'],
         'email' => $user['email'],
+        'role' => $user['role'] ?? 'user',
     ];
 
-    unset($_SESSION['old']);
-    redirect_to('../../../index.php');
+    unset($_SESSION['old'], $_SESSION['intended_url']);
+
+    if ($redirect !== '') {
+        redirect_to('../../../' . $redirect);
+    }
+
+    redirect_to(($user['role'] ?? 'user') === 'admin' ? '../../../admin-dashboard.php' : '../../../user-dashboard.php');
 } catch (PDOException $exception) {
     flash('error', 'Could not sign you in. Check the database setup and try again.');
     redirect_to('../../../login.php');
