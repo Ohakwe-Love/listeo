@@ -1,3 +1,10 @@
+<?php
+    require_once __DIR__ . "/assets/extras/includes/function.inc.php";
+    start_secure_session();
+    $messages = get_flash_messages();
+    $oldName = old_input('name');
+    $oldEmail = old_input('email');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,17 +34,22 @@
     <section class="general_form_container">
         <div class="form_wrapper">
             <div class="form_container">
-                <form action="">
+                <form action="assets/extras/includes/signup.inc.php" method="post">
                     <h1>create account</h1>
                     <div class="social_container">
-                        <a href=""><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href=""><i class="fa-brands fa-google-plus-g"></i></a>
-                        <a href=""><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Sign up with Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Sign up with Google"><i class="fa-brands fa-google-plus-g"></i></a>
+                        <a href="#" aria-label="Sign up with LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                     </div>
                     <span>or use your email for registration</span>
-                    <input type="text" placeholder="Name"/>
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
+                    <?php foreach ($messages as $type => $items): ?>
+                        <?php foreach ($items as $message): ?>
+                            <p class="form-alert form-alert-<?php echo h($type); ?>"><?php echo h($message); ?></p>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                    <input type="text" name="name" placeholder="Name" value="<?php echo h($oldName); ?>" required/>
+                    <input type="email" name="email" placeholder="Email" value="<?php echo h($oldEmail); ?>" required />
+                    <input type="password" name="password" placeholder="Password" minlength="8" required />
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -45,7 +57,7 @@
             <div class="form_about_container">
                 <div class="form_about">
                     <h1>Hello, Friend!</h1>
-                    <p>Already have an with us, click here to stay connected with us.</p>
+                    <p>Already have an account with us? Sign in to stay connected.</p>
                     <a href="login.php">log in</a>
                 </div>
             </div>

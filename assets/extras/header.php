@@ -1,3 +1,7 @@
+<?php
+    require_once __DIR__ . "/includes/function.inc.php";
+    $authUser = current_user();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +33,7 @@
     <main class="general-container" id="listeo_top">
         <!-- header -->
         <header>
-            <a href="" class="header-logo"><img src="assets/images/logo/logo-1.png" alt=""></a>
+            <a href="index.php" class="header-logo"><img src="assets/images/logo/logo-1.png" alt=""></a>
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
@@ -62,20 +66,25 @@
                     </svg>
                 </span>
                 <span class="small-screen-menu"><i class="fa-solid fa-bars"></i></span>
-                <a href="login.php" class="header-sign-in">
-                    <span><svg class="sign-in-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                    <polyline points="10 17 15 12 10 7"></polyline>
-                    <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg></span>sign in
-                </a>
+                <?php if ($authUser): ?>
+                    <span class="header-user">Hi, <?php echo h($authUser['name']); ?></span>
+                    <a href="logout.php" class="header-sign-in">logout</a>
+                <?php else: ?>
+                    <a href="login.php" class="header-sign-in">
+                        <span><svg class="sign-in-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg></span>sign in
+                    </a>
+                <?php endif; ?>
             </div>
         </header>
 
         <!-- small-screen-nav -->
         <div class="small-screen-nav">
             <div class="small-screen-header">
-                <a href="index.html" class="small-screen-logo"><img src="assets/images/logo/logo.png" alt=""></a>
+                <a href="index.php" class="small-screen-logo"><img src="assets/images/logo/logo.png" alt=""></a>
                 <span class="close-small-screen-nav"><i class="fa-solid fa-xmark"></i></span>
             </div>
 
@@ -84,22 +93,26 @@
                 <li><a href="about.php">about <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="pages.php">pages <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="contact.php">contact <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="service.php">services <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <li><a href="services.php">services <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="listings.php">listings <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="login.php">sign in <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <?php if ($authUser): ?>
+                    <li><a href="logout.php">logout <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <?php else: ?>
+                    <li><a href="login.php">sign in <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <?php endif; ?>
             </ul>
 
             <div class="small-screen-location">
                 <h4>our office</h4>
                 <p>12345 wood creeks road.</p>
                 <p>Phone: 234 816 145 2508</p>
-                <p>Email: <a href="http://" target="_blank" rel="noopener noreferrer">ohakwemuna@gmail.com</a></p>
+                <p>Email: <a href="mailto:ohakwemuna@gmail.com">ohakwemuna@gmail.com</a></p>
 
                 <div class="small-screen-icons">
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook-messenger"></i></a>
-                    <a href="http://" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" aria-label="Messenger"><i class="fa-brands fa-facebook-messenger"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                 </div>
             </div>
         </div>
