@@ -494,7 +494,9 @@
                         <li><span><i class="fa-solid fa-check"></i></span> Gallery Module enabled</li>
                     </ul>
 
-                    <a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php if (is_lister()): ?>
+                        <a href="user-listing-new.php" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php endif; ?>
                 </div>
             </div>
             
@@ -523,7 +525,9 @@
                         <li><span><i class="fa-solid fa-check"></i></span> Gallery Module enabled</li>
                     </ul>
 
-                    <a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php if (is_lister()): ?>
+                        <a href="user-listing-new.php" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -548,7 +552,9 @@
                         <li><span><i class="fa-solid fa-check"></i></span> Gallery Module enabled</li>
                     </ul>
 
-                    <a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php if (is_lister()): ?>
+                        <a href="user-listing-new.php" class="add-listing"><span><i><i class="fa-solid fa-plus"></i></i>add listing</span></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

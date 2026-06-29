@@ -52,7 +52,9 @@
                             <a href="contact.php">Contact</a>
                         </div>
                     </li>
-                    <li><a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">Add Listing</a></li>
+                    <?php if (is_lister()): ?>
+                        <li><a href="user-listing-new.php">Add Listing</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
 
@@ -103,7 +105,9 @@
                 <li><a href="listings.php">listings <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="about.php">about <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="services.php">services <span><i class="fa-solid fa-angle-right"></i></span></a></li>
-                <li><a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">add listing <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <?php if (is_lister()): ?>
+                    <li><a href="user-listing-new.php">add listing <span><i class="fa-solid fa-angle-right"></i></span></a></li>
+                <?php endif; ?>
                 <li><a href="blog.php">blog <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <li><a href="contact.php">contact <span><i class="fa-solid fa-angle-right"></i></span></a></li>
                 <?php if ($authUser): ?>

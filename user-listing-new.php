@@ -1,6 +1,6 @@
 <?php
     require_once __DIR__ . "/assets/extras/includes/management.inc.php";
-    require_auth();
+    require_lister();
 
     $extraStyles = ['assets/css/user.css'];
     $activeUserPage = 'listings';

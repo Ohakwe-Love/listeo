@@ -853,7 +853,7 @@ header .header-user{
 
 @media (max-width: 900px){
     header{
-        padding: 0px 25px;
+        padding: 15px 25px;
     }
     
     header .header-logo img{

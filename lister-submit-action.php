@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/assets/extras/includes/management.inc.php';
 
-require_auth();
+require_lister();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('user-listing-new.php');

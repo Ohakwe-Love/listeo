@@ -39,7 +39,9 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <span>Search by service, area, or provider</span>
             </div>
-            <a href="<?php echo $authUser ? 'user-listing-new.php' : 'login.php'; ?>">Add a listing</a>
+            <?php if (is_lister()): ?>
+                <a href="user-listing-new.php">Add a listing</a>
+            <?php endif; ?>
         </div>
 
         <div class="filter-pills">
