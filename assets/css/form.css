@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: "Raleway", sans-serif;
+    font-family: var(--primary-font) !important;
     color: var(--category-lighter-bg-color);
 }
 
@@ -95,7 +95,7 @@
 	width: 100%;
     outline: none;
     border-radius: 5px;
-    font-family: "Poppins", sans-serif;
+    font-family: var(--secondary-font);
     color: var(--category-lighter-bg-color);
 }
 

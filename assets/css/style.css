@@ -14,6 +14,8 @@
     --content-text-color: #777;
     --secondary-bg-color: #eee;
     --light-pink: rgba(249, 25, 66, 0.08);
+    --primary-font: "Raleway", sans-serif;
+    --secondary-font: "Poppins", sans-serif;
 }
 
 *{
@@ -27,7 +29,7 @@ html{
 }
 
 body{
-    font-family: "Raleway", sans-serif;
+    font-family: var(--primary-font);
     font-weight: 500;
     overflow-x: clip;
     background-color: var(--neutral-color);

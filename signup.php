@@ -18,8 +18,8 @@
     <link rel="manifest" href="assets/images/favicon/site.webmanifest">
 
     <!-- css -->
-    <link rel="stylesheet" href="assets/css/form.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/form.css">
 
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/ee0082ad61.js" crossorigin="anonymous"></script>
